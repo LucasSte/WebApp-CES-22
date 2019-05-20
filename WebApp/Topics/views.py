@@ -4,13 +4,15 @@ from django.template import loader
 from django.shortcuts import render
 from django.http import Http404
 
+
 def index(request):
     best_topic = TopicInformation.objects.order_by('votes')
     context = {
-        'Best voted Topics':
+        'best_voted_topics':
             best_topic,
     }
     return render(request, 'Topics/index.html', context)
+
 
 def detail(request, id):
     try:

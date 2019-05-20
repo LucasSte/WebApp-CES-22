@@ -1,9 +1,9 @@
-{% if best_topic %}
+{% if best_voted_topics %}
 <ul>
-    {% for topic in best_topic %}
-    <li><a href="/Topics/{{topic.id}}">{{topic.title}}</a></li>
+    {% for topic in best_voted_topics %}
+    <li><a href="/Topics/{{topic.id}}">{{topic.title_text}}</a></li>
     {% endfor %}
 </ul>
 {% else %}
-<p>No topics are availabe.</p>
+<p>No topics are available.</p>
 {% endif %}
