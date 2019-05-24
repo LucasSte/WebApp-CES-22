@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static "style.css" %}">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}WebApp{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Up!</h1>
+        {% block header_content %}
+        {% endblock %}
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

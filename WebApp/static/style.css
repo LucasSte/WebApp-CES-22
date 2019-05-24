@@ -1,0 +1,14 @@
+header h1 {
+    color: red;
+    position: absolute;
+    left: 100px;
+}
+
+header p {
+    position: absolute;
+    right: 100px;
+}
+
+header {
+    height: 100px;
+}
