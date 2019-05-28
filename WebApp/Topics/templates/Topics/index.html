@@ -1,9 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../../../static/topics_index.css">
+    <title>Relevant Topics</title>
+</head>
+
+
+<body>
+
+<div class="overhead">
+    <div class="div1"> UP! </div>
+    <div class="div2"> Relevant Topics</div>
+</div>
+
+
+<br>
+<br>
 {% if best_voted_topics %}
 <ul>
     {% for topic in best_voted_topics %}
-    <li><a href="/Topics/{{topic.id}}">{{topic.title_text}}</a></li>
+    <li><details open> <summary> <a href="/Topics/{{topic.id}}">{{topic.title_text}}</a> </summary>
+        {{topic.small_description}} </details>
+    <br> </li>
+
     {% endfor %}
 </ul>
 {% else %}
 <p>No topics are available.</p>
 {% endif %}
+
+</body>
+
+</html>
