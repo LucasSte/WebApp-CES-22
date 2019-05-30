@@ -1,17 +1,51 @@
 {% extends 'WebApp/base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Relevant topics{% endblock %}
 
 {% block header_content %}
-    {% if user.is_authenticated %}
-        <p>Hi {{ user.username }}!</p><br />
-        <p><a href="{% url 'logout' %}">Logout</a></p>
-    {% else %}
-      <p>You are not logged in</p><br />
-      <p><a href="{% url 'signup' %}">Sign up</a> <a href="{% url 'login' %}">Login</a></p>
-    {% endif %}
+    <div id="profile_area">
+        {% if user.is_authenticated %}
+            <p>Hi {{ user.username }}!</p>
+            <p><a href="{% url 'logout' %}">Logout</a></p>
+        {% else %}
+          <p>You are not logged in</p>
+          <p><a href="{% url 'signup' %}">Sign up</a> <a href="{% url 'login' %}">Login</a></p>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block content %}
-    <p>Test</p>
+
+    {% if best_voted_topics %}
+    <ul>
+        {% for topic in best_voted_topics %}
+            <div class="box">
+                <div class="votes">
+                    <form action="{% url 'Topics:upvote' topic.id %}" method='POST'>
+                        {% csrf_token %}
+                        <button type='submit'>UpVote</button>
+                    </form>
+                        <br>
+                        Votes: <br> {{topic.votes}}
+                        <br>
+                        <br>
+                    <form action="{% url 'Topics:downvote' topic.id %}" method='POST'>
+                        {% csrf_token %}
+                        <button type='submit'>DownVote</button>
+                    </form>
+                </div>
+                <div class="content">
+                    <li><a href="/Topics/{{topic.id}}">{{topic.title_text}}</a>
+                        {{topic.small_description}}<br><br>
+                    <br> </li>
+                </div>
+            </div>
+
+
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No topics are available.</p>
+    {% endif %}
+
 {% endblock %}
