@@ -19,7 +19,7 @@
 {% if best_voted_topics %}
 <ul>
     {% for topic in best_voted_topics %}
-    <li><details open> <summary> <a href="/Topics/{{topic.id}}">{{topic.title_text}}</a> </summary>
+    <li><details> <summary> <a href="/Topics/{{topic.id}}">{{topic.title_text}}</a> </summary>
         {{topic.small_description}} </details>
     <br> </li>
 

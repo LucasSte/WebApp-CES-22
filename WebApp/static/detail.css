@@ -33,7 +33,7 @@ h2 {
 
 .box{
     display: grid;
-    grid-template-columns: 12% 88%;
+    grid-template-columns: 20% 80%;
     width: 60%;
     background-color: lightgrey;
     padding: 10px;
@@ -43,7 +43,7 @@ h2 {
 .div1{
     text-align: center;
     position: relative;
-    top: 30%;
+    top: 5%;
     font-size: 15px;
 }
 .div2{
