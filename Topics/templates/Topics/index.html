@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
+{% load static %}
 <head>
-    <link rel="stylesheet" href="../../../static/topics_index.css">
+    <link rel="stylesheet" href="{% static "style.css" %}">
     <title>Relevant Topics</title>
 </head>
 
 
 <body>
 
-<div class="overhead">
+<header>
     <div class="div1"> UP! </div>
-    <div class="div2"> Relevant Topics</div>
-</div>
+    <div class="title">{% block title %}Relevant topics{% endblock %}</div>
+    {% block header_content %}
+    {% endblock %}
+</header>
 
 
 <br>
