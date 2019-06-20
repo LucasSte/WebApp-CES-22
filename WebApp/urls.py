@@ -17,10 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views
 
+#app_name = 'Main'
+
 urlpatterns = [
     path('Topics/', include('Topics.urls')),
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', views.SignUp.as_view(), name='signup'),
+    path('downvote/<int:id>/', views.downvoteMain, name='downvote_main'),
+    path('upvote/<int:id>/', views.upvoteMain, name='upvote_main')
 ]

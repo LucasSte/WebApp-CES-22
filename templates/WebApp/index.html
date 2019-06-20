@@ -30,7 +30,7 @@
         {% for topic in best_voted_topics %}
             <div class="box">
                 <div class="votes">
-                    <form action="{% url 'Topics:upvote' topic.id %}" method='POST'>
+                    <form action="{% url 'upvote_main' topic.id %}" method='POST'>
                         {% csrf_token %}
                         <button type='submit'>UpVote</button>
                     </form>
@@ -38,7 +38,7 @@
                         Votes: <br> {{topic.votes}}
                         <br>
                         <br>
-                    <form action="{% url 'Topics:downvote' topic.id %}" method='POST'>
+                    <form action="{% url 'downvote_main' topic.id %}" method='POST'>
                         {% csrf_token %}
                         <button type='submit'>DownVote</button>
                     </form>
