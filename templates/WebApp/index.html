@@ -1,8 +1,15 @@
-{% extends 'WebApp/base.html' %}
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static "style.css" %}">
+    <title>Relevant Topics</title>
+</head>
 
-{% block title %}Relevant topics{% endblock %}
 
-{% block header_content %}
+<header>
+    <div class="div1"> <a href="{% url 'index' %}">UP!</a> </div>
+    <div class="title">Relevant topics</div>
     <div id="profile_area">
         {% if user.is_authenticated %}
             <p>Hi {{ user.username }}!</p>
@@ -12,10 +19,12 @@
           <p><a href="{% url 'signup' %}">Sign up</a> <a href="{% url 'login' %}">Login</a></p>
         {% endif %}
     </div>
-{% endblock %}
+</header>
 
-{% block content %}
+<br>
+<br>
 
+<body>
     {% if best_voted_topics %}
     <ul>
         {% for topic in best_voted_topics %}
@@ -48,4 +57,5 @@
     <p>No topics are available.</p>
     {% endif %}
 
-{% endblock %}
+
+</body>
