@@ -1,11 +1,14 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.views import generic
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from Topics.models import TopicInformation
-from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
+from .forms import UserLoginForm
+
 
 def index(request):
     best_topic = TopicInformation.objects.order_by('-votes')
@@ -80,5 +83,33 @@ def upvoteMain(request, id):
         response = HttpResponseRedirect(reverse('index'))
         response.set_cookie('upvoted' + str(id), 'YES')
         response.set_cookie('downvoted' + str(id), 'PLUS')
-
     return response
+
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.is_active:
+                    login(request, user)
+                    return HttpResponseRedirect(reverse('index'))
+                else:
+                    return HttpResponse('User is not active')
+            else:
+                return HttpResponse('Wrong user or password!')
+    else:
+        form = UserLoginForm()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'login.html', context)
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('index')
