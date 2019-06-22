@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -12,3 +13,13 @@ class TopicInformation(models.Model):
 
     def __str__(self):
         return self.big_description
+
+
+class Comment(models.Model):
+    topic = models.ForeignKey(TopicInformation, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=160)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '{}-{}'.format(self.topic.title_text, str(self.user.username) )

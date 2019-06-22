@@ -1,5 +1,6 @@
 from django.shortcuts import HttpResponseRedirect
-from .models import TopicInformation
+from .models import *
+from .forms import *
 from django.urls import reverse
 from django.shortcuts import render
 from django.http import Http404
@@ -16,11 +17,27 @@ def index(request):
 
 def detail(request, id):
     try:
-        Topic = TopicInformation.objects.get(pk=id)
+        topic = TopicInformation.objects.get(pk=id)
     except TopicInformation.DoesNotExist:
         raise Http404("Topic does not exist.")
 
-    return render(request, 'Topics/detail.html', {'Topic': Topic})
+    comments = Comment.objects.filter(topic=topic).order_by('-id')
+
+    if request.method == 'TOPIC':
+        comment_form = CommentForm(request.POST or None)
+        if comment_form.is_valid():
+            comment_form.save()
+    else:
+        comment_form = CommentForm()
+
+
+    context = {
+        'topic': topic,
+        'comments': comments,
+        'comment_form': comment_form,
+    }
+
+    return render(request, 'Topics/detail.html', context)
 
 
 def upVote(request, id):
