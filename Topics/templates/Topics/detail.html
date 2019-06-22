@@ -1,27 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="../../../static/detail.css">
-    <title>{{Topic.title_text}}</title>
-</head>
+{% extends 'WebApp/base.html' %}
 
-<header>
-    <div class="divh"> <a href="{% url 'index' %}">UP!</a> </div>
-    <div class="title">Topics Page</div>
-    <div id="profile_area">
-        {% if user.is_authenticated %}
-            <p>Hi {{ user.username }}!</p>
-            <p><a href="{% url 'logout' %}">Logout</a></p>
-        {% else %}
-          <p>You are not logged in</p>
-          <p><a href="{% url 'signup' %}">Sign up</a> <a href="{% url 'login' %}">Login</a></p>
-        {% endif %}
-    </div>
-</header>
+{% block title %}Topic.title_text{% endblock %}
 
-<br>
-
-<body>
+{% block content %}
 <h2>{{Topic.title_text}}</h2>
 <p class="date">Date: {{Topic.pub_date}}</p>
 <br>
@@ -49,8 +30,4 @@
         </details>
     </div>
 </div>
-
-
-</body>
-</html>
-
+{% endblock %}
