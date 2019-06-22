@@ -25,19 +25,65 @@ def detail(request, id):
 
 
 def upVote(request, id):
-    Topic = TopicInformation.objects.get(pk=id)
-    Topic.votes += 1
-    Topic.save()
+    if 'upvoted' + str(id) in request.COOKIES:
+        value = request.COOKIES['upvoted' + str(id)]
+        if value == 'YES':
+            messages.success(request, 'You have already upvoted that')
+            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+        elif value == 'PLUS':
+            Topic = TopicInformation.objects.get(pk=id)
+            Topic.votes += 1
+            Topic.save()
+            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+            response.set_cookie('upvoted' + str(id), 'NO')
+        else:
+            Topic = TopicInformation.objects.get(pk=id)
+            Topic.votes += 1
+            Topic.save()
+            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+            response.set_cookie('upvoted' + str(id), 'YES')
+            response.set_cookie('downvoted' + str(id), 'PLUS')
 
-    return HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+    else:
+        Topic = TopicInformation.objects.get(pk=id)
+        Topic.votes += 1
+        Topic.save()
+        response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+        response.set_cookie('upvoted' + str(id), 'YES')
+        response.set_cookie('downvoted' + str(id), 'PLUS')
+
+    return response
 
 
 def downVote(request, id):
-    Topic = TopicInformation.objects.get(pk=id)
-    Topic.votes -= 1
-    Topic.save()
 
-    return HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+    if 'downvoted' + str(id) in request.COOKIES:
+        value = request.COOKIES['downvoted'+ str(id)]
+        if value == 'YES':
+            messages.success(request, 'You have already downvoted that')
+            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+        elif value == 'PLUS':
+            Topic = TopicInformation.objects.get(pk=id)
+            Topic.votes -= 1
+            Topic.save()
+            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+            response.set_cookie('downvoted' + str(id), 'NO')
+        else:
+            Topic = TopicInformation.objects.get(pk=id)
+            Topic.votes -= 1
+            Topic.save()
+            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+            response.set_cookie('upvoted' + str(id), 'PLUS')
+            response.set_cookie('downvoted' + str(id), 'YES')
+    else:
+        Topic = TopicInformation.objects.get(pk=id)
+        Topic.votes -= 1
+        Topic.save()
+        response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
+        response.set_cookie('downvoted' + str(id), 'YES')
+        response.set_cookie('upvoted' + str(id), 'PLUS')
+
+    return response
 
 
 def newEntry(request):
