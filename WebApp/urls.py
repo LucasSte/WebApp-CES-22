@@ -23,8 +23,9 @@ urlpatterns = [
     path('Topics/', include('Topics.urls')),
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('signup/', views.SignUp.as_view(), name='signup'),
+    path('login/', views.user_login, name="user_login"),
+    path('logout/', views.user_logout, name="user_logout"),
+    path('register/', views.register, name='register'),
     path('downvote/<int:id>/', views.downvoteMain, name='downvote_main'),
     path('upvote/<int:id>/', views.upvoteMain, name='upvote_main')
 ]

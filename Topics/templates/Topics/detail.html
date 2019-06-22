@@ -1,51 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="../../../static/detail.css">
-    <title>{{topic.title_text}}</title>
-</head>
+{% extends 'WebApp/base.html' %}
 
-<header>
-    <div class="divh"> <a href="{% url 'index' %}">UP!</a> </div>
-    <div class="title">Topics Page</div>
-    <div id="profile_area">
-        {% if user.is_authenticated %}
-            <p>Hi {{ user.username }}!</p>
-            <p><a href="{% url 'logout' %}">Logout</a></p>
-        {% else %}
-          <p>You are not logged in</p>
-          <p><a href="{% url 'signup' %}">Sign up</a> <a href="{% url 'login' %}">Login</a></p>
-        {% endif %}
-    </div>
-</header>
+{% block title %}{{ Topic.title_text }}{% endblock %}
 
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 <br>
-
-<body>
-<h2>{{topic.title_text}}</h2>
-<p class="date">Date: {{topic.pub_date}}</p>
+<h2>{{Topic.title_text}}</h2>
+<p class="date">Date: {{Topic.pub_date}}</p>
 <br>
 
 <div class="box">
     <div class="div1">
-        <form action="{% url 'Topics:upvote' topic.id %}" method='POST'>
+        <form action="{% url 'Topics:upvote' Topic.id %}" method='POST'>
       {% csrf_token %}
     <button type='submit'>UpVote</button>
         </form>
         <br>
-        Votes: <br> {{topic.votes}}
+        Votes: <br> {{Topic.votes}}
         <br>
         <br>
-    <form action="{% url 'Topics:downvote' topic.id %}" method='POST'>
+    <form action="{% url 'Topics:downvote' Topic.id %}" method='POST'>
     {% csrf_token %}
     <button type='submit'>DownVote</button>
     </form>
     </div>
     <div class="div2">
-        <p class="small_description"> {{topic.small_description}} </p>
+        <p class="small_description"> {{Topic.small_description}} </p>
         <br>
         <details> <summary> More information</summary>
-        {{topic.big_description}}
+        {{Topic.big_description}}
         </details>
     </div>
 </div>
@@ -64,8 +53,4 @@
     {%endfor%}
 </div>
 
-
-
-</body>
-</html>
-
+{% endblock %}

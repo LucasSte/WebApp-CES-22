@@ -1,0 +1,33 @@
+{% extends 'WebApp/base.html' %}
+
+{% block title %}New topic entry{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label>Title: </label>
+        <input name="title" type="text">
+        <br>
+        <br>
+        <label>Description (up to 150 characters):</label>
+        <br>
+        <textarea name= "small_description" cols="50" rows="8"></textarea>
+        <br>
+        <br>
+        <label>Further details:</label>
+        <br>
+        <textarea name= "big_description" cols="50" rows="10"></textarea>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+    <br>
+
+    <button type="reset"><a style="text-decoration: none" href="{% url 'index' %}">Cancel</a> </button>
+
+</body>
+{% else %}
+<h1> You must <a href="{% url 'user_login' %}">log in</a> to create a new topic</h1>
+{% endif %}
+{% endblock %}
