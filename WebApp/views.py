@@ -1,12 +1,9 @@
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse_lazy
-from django.views import generic
 from django.shortcuts import render, redirect
 from Topics.models import TopicInformation
 from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .forms import UserLoginForm
+from .forms import UserLoginForm, UserRegistrationForm
 
 
 def index(request):
@@ -16,12 +13,6 @@ def index(request):
             best_topic,
     }
     return render(request, 'WebApp/index.html', context)
-
-
-class SignUp(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'WebApp/signup.html'
 
 
 def downvoteMain(request, id):
@@ -61,9 +52,25 @@ def user_login(request):
     context = {
         'form': form,
     }
-    return render(request, 'login.html', context)
+    return render(request, 'WebApp/login.html', context)
 
 
 def user_logout(request):
     logout(request)
     return redirect('index')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST or None)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.set_password(form.cleaned_data['password'])
+            new_user.save()
+            return redirect('index')
+    else:
+        form = UserRegistrationForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'registration/register.html', context)
