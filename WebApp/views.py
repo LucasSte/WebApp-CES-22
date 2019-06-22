@@ -5,13 +5,22 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from .forms import UserLoginForm, UserRegistrationForm
+from Topics.models import TopicInformation
+from django.db.models import Q
 
 
 def index(request):
-    best_topic = TopicInformation.objects.order_by('-votes')
+    topics = TopicInformation.objects.order_by('-votes')
+    query = request.GET.get('q')
+    if query:
+        topics = TopicInformation.objects.filter(
+            Q(title_text__icontains=query) |
+            Q(small_description__icontains=query) |
+            Q(big_description__icontains=query)
+        )
     context = {
-        'best_voted_topics':
-            best_topic,
+        'topics':
+            topics,
     }
     return render(request, 'WebApp/index.html', context)
 

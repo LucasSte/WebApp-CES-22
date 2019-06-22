@@ -3,43 +3,43 @@
 {% block title %}Relevant topics{% endblock %}
 
 {% block content %}
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <br>
-    {% if best_voted_topics %}
-    <ul>
-        {% for topic in best_voted_topics %}
-            <div class="box">
-                <div class="votes">
-                    <form action="{% url 'upvote_main' topic.id %}" method='POST'>
-                        {% csrf_token %}
-                        <button type='submit'>UpVote</button>
-                    </form>
-                        <br>
-                        Votes: <br> {{topic.votes}}
-                        <br>
-                        <br>
-                    <form action="{% url 'downvote_main' topic.id %}" method='POST'>
-                        {% csrf_token %}
-                        <button type='submit'>DownVote</button>
-                    </form>
-                </div>
-                <div class="content">
-                    <li><a href="/Topics/{{topic.id}}">{{topic.title_text}}</a>
-                        <br> {{topic.small_description}}<br>
-                    <br> </li>
-                </div>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<br>
+{% if topics %}
+<ul>
+    {% for topic in topics %}
+        <div class="box">
+            <div class="votes">
+                <form action="{% url 'upvote_main' topic.id %}" method='POST'>
+                    {% csrf_token %}
+                    <button type='submit'>UpVote</button>
+                </form>
+                    <br>
+                    Votes: <br> {{topic.votes}}
+                    <br>
+                    <br>
+                <form action="{% url 'downvote_main' topic.id %}" method='POST'>
+                    {% csrf_token %}
+                    <button type='submit'>DownVote</button>
+                </form>
             </div>
+            <div class="content">
+                <li><a href="/Topics/{{topic.id}}">{{topic.title_text}}</a>
+                    <br> {{topic.small_description}}<br>
+                <br> </li>
+            </div>
+        </div>
 
 
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No topics are available.</p>
-    {% endif %}
+    {% endfor %}
+</ul>
+{% else %}
+<p>No topics found using the search query "{{ request.GET.q }}".</p>
+{% endif %}
 {% endblock %}
