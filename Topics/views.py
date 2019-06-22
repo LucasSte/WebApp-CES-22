@@ -53,6 +53,7 @@ def upVote(request, id):
             Topic.save()
             response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
             response.set_cookie('upvoted' + str(id), 'NO')
+            response.set_cookie('downvoted' + str(id), 'NO')
         else:
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes += 1
@@ -85,6 +86,7 @@ def downVote(request, id):
             Topic.save()
             response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
             response.set_cookie('downvoted' + str(id), 'NO')
+            response.set_cookie('upvoted' + str(id), 'NO')
         else:
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes -= 1
