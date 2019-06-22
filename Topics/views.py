@@ -113,7 +113,7 @@ def newEntry(request):
             new_topic.pub_date = timezone.now()
             new_topic.votes = 0
             new_topic.save()
-            return render(request, 'Topics/detail.html', {'Topic': new_topic})
+            return render(request, 'Topics/detail.html', {'topic': new_topic})
         else:
             messages.success(request, 'Fill all the spaces, before submitting.')
             return render(request, 'Topics/new_entry.html')
