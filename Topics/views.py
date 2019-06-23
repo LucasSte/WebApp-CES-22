@@ -24,10 +24,13 @@ def detail(request, id):
 
     comments = Comment.objects.filter(topic=topic).order_by('-id')
 
-    if request.method == 'TOPIC':
+    if request.method == 'POST':
         comment_form = CommentForm(request.POST or None)
         if comment_form.is_valid():
-            comment_form.save()
+            content = request.POST.get('content')
+            comment = Comment.objects.create(topic=topic, user= request.user, content=content)
+            comment.save()
+            #return HttpResponseRedirect(topic.get_absolute_url())
     else:
         comment_form = CommentForm()
 
