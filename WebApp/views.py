@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from Topics.models import TopicInformation
 from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
@@ -38,6 +37,7 @@ def downvoteMain(request, id):
             Topic.save()
             response = HttpResponseRedirect(reverse('index'))
             response.set_cookie('downvoted' + str(id), 'NO')
+            response.set_cookie('upvoted' + str(id), 'NO')
         else:
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes -= 1
@@ -68,6 +68,7 @@ def upvoteMain(request, id):
             Topic.save()
             response = HttpResponseRedirect(reverse('index'))
             response.set_cookie('upvoted' + str(id), 'NO')
+            response.set_cookie('downvoted' + str(id), 'NO')
         else:
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes += 1
