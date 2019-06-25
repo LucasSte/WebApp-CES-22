@@ -34,7 +34,7 @@ def detail(request, id):
                 comment_qs = Comment.objects.get(id=reply_id)
             comment = Comment.objects.create(topic=topic, user= request.user, content=content, reply=comment_qs)
             comment.save()
-            #return HttpResponseRedirect(topic.get_absolute_url())
+            #return HttpResponseRedirect(topic.get_abso lute_url())
     else:
         comment_form = CommentForm()
 

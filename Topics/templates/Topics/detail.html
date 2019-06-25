@@ -43,52 +43,9 @@
 <br><br>
 <hr>
 
-
-<div class="main-comment-section">
-    <div class="conteiner-fluid mt-2">
-        <div class="form-group row">
-            <form method="post">
-                {% csrf_token %}
-                {{ comment_form.as_p }}
-                {% if request.user.is_authenticated %}
-                <input type="submit" value="Submit" class="btn btn-outline-success">
-                {% else %}
-                <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
-                {% endif %}
-            </form>
-        </div>
-    </div>
-
-    {{ comments.count }} Comment{{ comments|pluralize }}
-    {% for comment in comments%}
-     <blockquote class="blockquote">
-         <p class="mb-0"> {{ comment.content }}</p>
-         <footer class="blockquote-footer">by <cite title="Source Title">{{comment.user|capfirst}}</cite> </footer>
-     </blockquote>
-
-    <div class="replied-comments container mt-2">
-        {%for reply in comment.replies.all%}
-        <blockquote class="blockquote">
-             <p class="mb-0"> {{ reply.content }}</p>
-             <footer class="blockquote-footer">by <cite title="Source Title">{{reply.user|capfirst}}</cite> </footer>
-         </blockquote>
-        {%endfor%}
-        <div class="form-group row">
-            <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                {{ comment_form.as_p }}
-                {% if request.user.is_authenticated %}
-                    <input type="submit" value="Submit" class="btn btn-outline-success">
-                {% else %}
-                    <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
-                {% endif %}
-            </form>
-        </div>
-
-    </div>
-
-    {%endfor%}
+<div class="main-comment-section ml-4">
+    {% include 'Topics/comments.html' %}
 </div>
+
 
 {% endblock %}
