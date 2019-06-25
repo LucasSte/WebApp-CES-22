@@ -22,13 +22,17 @@ def detail(request, id):
     except TopicInformation.DoesNotExist:
         raise Http404("Topic does not exist.")
 
-    comments = Comment.objects.filter(topic=topic).order_by('-id')
+    comments = Comment.objects.filter(topic=topic, reply=None).order_by('-id')
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST or None)
         if comment_form.is_valid():
             content = request.POST.get('content')
-            comment = Comment.objects.create(topic=topic, user= request.user, content=content)
+            reply_id = request.POST.get('comment_id')
+            comment_qs = None
+            if reply_id:
+                comment_qs = Comment.objects.get(id=reply_id)
+            comment = Comment.objects.create(topic=topic, user= request.user, content=content, reply=comment_qs)
             comment.save()
             #return HttpResponseRedirect(topic.get_absolute_url())
     else:
