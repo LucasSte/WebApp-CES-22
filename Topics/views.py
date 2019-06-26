@@ -2,10 +2,10 @@ from .models import *
 from .forms import *
 from django.urls import reverse
 from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
-from django.template.loader import render_to_string
 
 
 def detail(request, id):
