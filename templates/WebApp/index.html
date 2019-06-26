@@ -24,7 +24,8 @@
 
 
 {% if topics.has_other_pages %}
-  <ul class="pagination">
+<nav aria-label="...">
+  <ul class="pagination justify-content-center">
     {% if topics.has_previous %}
       <li class="page-item"><a class="page-link" href="{{ base_page_url }}{{ topics.previous_page_number }}">&laquo;</a></li>
     {% endif %}
@@ -39,6 +40,7 @@
       <li class="page-item"><a class="page-link" href="{{ base_page_url }}{{ topics.next_page_number }}">&raquo;</a></li>
     {% endif %}
   </ul>
+</nav>
 {% endif %}
 {% else %}
 <p>No topics found using the search query "{{ request.GET.q }}".</p>
