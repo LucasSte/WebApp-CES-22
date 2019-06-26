@@ -14,6 +14,7 @@ def detail(request, id):
     except TopicInformation.DoesNotExist:
         raise Http404("Topic does not exist.")
 
+
     comments = Comment.objects.filter(topic=topic, reply=None).order_by('-id')
 
     if request.method == 'POST':
