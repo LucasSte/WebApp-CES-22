@@ -120,6 +120,7 @@ def newEntry(request):
             new_topic.small_description = request.POST.get('small_description')
             new_topic.big_description = request.POST.get('big_description')
             new_topic.pub_date = timezone.now()
+            new_topic.creator = request.user.get_username()
             new_topic.votes = 0
             new_topic.save()
             return render(request, 'Topics/detail.html', {'topic': new_topic})
