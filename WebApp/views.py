@@ -6,19 +6,11 @@ from django.contrib import messages
 from .forms import UserLoginForm, UserRegistrationForm
 from Topics.models import TopicInformation
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def index(request):
     topics = TopicInformation.objects.order_by('-votes')
-
-    if len(topics) < 5:
-        first_page = False
-        last_page = False
-    else:
-        first_page = True
-        last_page = False
-
-    topics = topics[0:5]
     query = request.GET.get('q')
     if query:
         search = True
@@ -31,62 +23,44 @@ def index(request):
     else:
         search = False
 
-    next_page = 2
-    previous_page = -1
+    page = request.GET.get('page', 1)
+    paginator = Paginator(topics, 5)
+    try:
+        paginated_topics = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_topics = paginator.page(1)
+    except EmptyPage:
+        paginated_topics = paginator.page(paginator.num_pages)
 
-    context = {
-        'topics':
-            topics,
-        'first_page': first_page,
-        'last_page': last_page,
-        'next_page': next_page,
-        'previous_page': previous_page,
-        'search': search,
-    }
-
-
-    return render(request, 'WebApp/index.html', context)
-
-def loadPage(request, id):
-
-
-    first_topic = (id-1)*5
-    last_topic = 5*id
-    topics = TopicInformation.objects.order_by('-votes')
-
-    list_length = len(topics)
-
-    if list_length <= last_topic:
-        topics = topics[first_topic:]
-        last_page = True
-        first_page = False
-    elif id == 1:
-        topics = topics[first_topic:last_topic]
-        first_page = True
-        last_page = False
+    if page is None:
+        start_index = 0
+        end_index = 5
     else:
-        topics = topics[first_topic:last_topic]
-        first_page = False
-        last_page = False
+        (start_index, end_index) = proper_pagination(paginated_topics, index=3)
 
-    next_page = id + 1
-    previous_page = id - 1
+    page_range = list(paginator.page_range)[start_index:end_index]
 
-    query = request.GET.get('q')
-    if query:
-        topics = TopicInformation.objects.filter(
-            Q(title_text__icontains=query) |
-            Q(small_description__icontains=query) |
-            Q(big_description__icontains=query)
-        )
+    if search:
+        base_page_url = '?q=' + query + '&page='
+    else:
+        base_page_url = '?page='
 
     context = {
-        'topics':
-            topics, 'first_page': first_page, 'last_page': last_page,
-        'next_page': next_page, 'previous_page': previous_page
+        'topics': paginated_topics,
+        'base_page_url': base_page_url,
+        'search': search,
+        'page_range': page_range,
     }
-
     return render(request, 'WebApp/index.html', context)
+
+
+def proper_pagination(posts, index):
+    start_index = 0
+    end_index = 5
+    if posts.number > index:
+        start_index = posts.number - index
+        end_index = start_index + end_index
+    return start_index, end_index
 
 
 def downvoteMain(request, id):

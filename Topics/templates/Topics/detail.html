@@ -44,9 +44,18 @@
     <div class="div2">
         <p class="small_description"> {{topic.small_description}} </p>
         <br>
-        <details> <summary> More information</summary>
-        {{topic.big_description}}
-        </details>
+        <p> <button class="btn btn-outline-dark btn-sm" type="button" data-toggle="collapse" data-target="#collapseDescription" aria-expanded="false" aria-controls="collapseDescription">
+            More information
+        </button>
+        </p>
+        <div class="collapse" id="collapseDescription">
+            <div class="collapse_description">
+                <br>
+                {{topic.big_description}}
+                <br>
+                <br>
+            </div>
+        </div>
     </div>
 </div>
 
