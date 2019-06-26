@@ -41,33 +41,41 @@ def detail(request, id):
 
 
 def upvote(request, id):
-    topic = get_object_or_404(TopicInformation, id=id)
-    if topic.upvotes_users.filter(id=request.user.id).exists():
-        topic.upvotes_users.remove(request.user)
-        topic.votes = topic.votes - 1
-    else:
-        topic.upvotes_users.add(request.user)
-        topic.votes = topic.votes + 1
-        if topic.downvotes_users.filter(id=request.user.id).exists():
-            topic.downvotes_users.remove(request.user)
-            topic.votes = topic.votes + 1
-    topic.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-def downvote(request, id):
-    topic = get_object_or_404(TopicInformation, id=id)
-    if topic.downvotes_users.filter(id=request.user.id).exists():
-        topic.downvotes_users.remove(request.user)
-        topic.votes = topic.votes + 1
-    else:
-        topic.downvotes_users.add(request.user)
-        topic.votes = topic.votes - 1
+    if request.user.is_authenticated:
+        topic = get_object_or_404(TopicInformation, id=id)
         if topic.upvotes_users.filter(id=request.user.id).exists():
             topic.upvotes_users.remove(request.user)
             topic.votes = topic.votes - 1
-    topic.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            topic.upvotes_users.add(request.user)
+            topic.votes = topic.votes + 1
+            if topic.downvotes_users.filter(id=request.user.id).exists():
+                topic.downvotes_users.remove(request.user)
+                topic.votes = topic.votes + 1
+        topic.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    else:
+        messages.success(request, 'Login first to upVote')
+        return HttpResponseRedirect(reverse('user_login'))
+
+def downvote(request, id):
+    if request.user.is_authenticated:
+        topic = get_object_or_404(TopicInformation, id=id)
+        if topic.downvotes_users.filter(id=request.user.id).exists():
+            topic.downvotes_users.remove(request.user)
+            topic.votes = topic.votes + 1
+        else:
+            topic.downvotes_users.add(request.user)
+            topic.votes = topic.votes - 1
+            if topic.upvotes_users.filter(id=request.user.id).exists():
+                topic.upvotes_users.remove(request.user)
+                topic.votes = topic.votes - 1
+        topic.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        messages.success(request, 'Login first to downVote')
+        return HttpResponseRedirect(reverse('user_login'))
 
 
 def newEntry(request):
