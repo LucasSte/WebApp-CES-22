@@ -27,7 +27,7 @@
         {% if request.user.is_authenticated %}
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span>Hi {{ request.user }}!</span>
+              <span style="color: orange;">Hi {{ request.user }}!</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'Topics:new' %}">Post</a>
