@@ -21,7 +21,6 @@ from . import views
 urlpatterns = [
     path('Topics/', include('Topics.urls')),
     path('', views.index, name='index'),
-    path('page=<int:id>', views.loadPage, name='load_page'),
     path('admin/', admin.site.urls),
     path('login/', views.user_login, name="user_login"),
     path('logout/', views.user_logout, name="user_logout"),

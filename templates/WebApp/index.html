@@ -36,36 +36,26 @@
                 <br> </li>
             </div>
         </div>
-
-
     {% endfor %}
 </ul>
 
-{% if not search %}
-{% if first_page %}
-<form action="{% url 'load_page' next_page %}" method="GET">
-    <button type="submit">Next page</button>
-</form>
-
-{% elif last_page %}
-<form action="{% url 'load_page' previous_page %}" method="GET">
-    <button type="submit">Previous page</button>
-</form>
-
-{% else %}
-<form action="{% url 'load_page' next_page %}" method="GET">
-    <button type="submit">Next page</button>
-</form>
-<br>
-<form action="{% url 'load_page' previous_page %}" method="GET">
-    <button type="submit">Previous page</button>
-</form>
-
+{% if topics.has_other_pages %}
+  <ul class="pagination">
+    {% if topics.has_previous %}
+      <li class="page-item"><a class="page-link" href="{{ base_page_url }}{{ topics.previous_page_number }}">&laquo;</a></li>
+    {% endif %}
+    {% for i in page_range %}
+      {% if topics.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a class="page-link" href="{{ base_page_url }}{{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if topics.has_next %}
+      <li class="page-item"><a class="page-link" href="{{ base_page_url }}{{ topics.next_page_number }}">&raquo;</a></li>
+    {% endif %}
+  </ul>
 {% endif %}
-{% endif %}
-
-
-
 {% else %}
 <p>No topics found using the search query "{{ request.GET.q }}".</p>
 {% endif %}
