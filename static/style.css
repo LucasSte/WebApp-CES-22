@@ -75,6 +75,15 @@ header{
     margin: auto;
 }
 
+.creator{
+    text-align: center;
+    background-color: lightgrey;
+    width: 60%;
+    padding: 10px;
+    border: 0;
+    margin: auto;
+}
+
 h2 {
     text-align: center;
     background-color: lightgrey;

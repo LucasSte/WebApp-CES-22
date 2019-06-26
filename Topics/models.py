@@ -10,7 +10,7 @@ class TopicInformation(models.Model):
     pub_date = models.DateField('date published')
     votes = models.IntegerField(default=0)
     big_description = models.CharField(max_length=10000)
-    #creator = models.CharField(max_length=50)
+    creator = models.CharField(max_length=50)
 
     def __str__(self):
         return self.big_description
