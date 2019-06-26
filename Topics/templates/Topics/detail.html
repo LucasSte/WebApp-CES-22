@@ -39,7 +39,13 @@
         </details>
     </div>
 </div>
-
+{% if topic.creator == request.user.get_username %}
+<div style="float: right;">
+    <a href="{% url 'Topics:post_edit' topic.id %}">
+        <button type="button" class="btn btn-outline-success">Edit</button>
+    </a>
+</div>
+{% endif %}
 
 <br><br>
 <hr>

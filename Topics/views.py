@@ -2,18 +2,10 @@ from django.shortcuts import HttpResponseRedirect
 from .models import *
 from .forms import *
 from django.urls import reverse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.contrib import messages
 from django.utils import timezone
-
-def index(request):
-    best_topic = TopicInformation.objects.order_by('votes')
-    context = {
-        'best_voted_topics':
-            best_topic,
-    }
-    return render(request, 'Topics/index.html', context)
 
 
 def detail(request, id):
@@ -131,5 +123,19 @@ def newEntry(request):
         return render(request, 'Topics/new_entry.html')
 
 
-
-# Create your views here.
+def post_edit(request, id):
+    topic = get_object_or_404(TopicInformation, id=id)
+    if topic.creator != request.user.get_username():
+        raise Http404()
+    if request.method == 'POST':
+        form = PostEditForm(request.POST or None, instance=topic)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(topic.get_absolute_url())
+    else:
+        form = PostEditForm(instance=topic)
+    context = {
+        'form': form,
+        'topic': topic,
+    }
+    return render(request, 'WebApp/post_edit.html', context)
