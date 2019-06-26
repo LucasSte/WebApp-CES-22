@@ -13,3 +13,13 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
+
+
+class PostEditForm(forms.ModelForm):
+    class Meta:
+        model = TopicInformation
+        fields = {
+            'title_text',
+            'small_description',
+            'big_description',
+        }

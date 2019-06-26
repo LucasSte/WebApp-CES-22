@@ -10,6 +10,68 @@ from django.db.models import Q
 
 def index(request):
     topics = TopicInformation.objects.order_by('-votes')
+
+    if len(topics) < 5:
+        first_page = False
+        last_page = False
+    else:
+        first_page = True
+        last_page = False
+
+    topics = topics[0:5]
+    query = request.GET.get('q')
+    if query:
+        search = True
+        topics = TopicInformation.objects.filter(
+            Q(title_text__icontains=query) |
+            Q(small_description__icontains=query) |
+            Q(big_description__icontains=query) |
+            Q(creator__icontains=query)
+        )
+    else:
+        search = False
+
+    next_page = 2
+    previous_page = -1
+
+    context = {
+        'topics':
+            topics,
+        'first_page': first_page,
+        'last_page': last_page,
+        'next_page': next_page,
+        'previous_page': previous_page,
+        'search': search,
+    }
+
+
+    return render(request, 'WebApp/index.html', context)
+
+def loadPage(request, id):
+
+
+    first_topic = (id-1)*5
+    last_topic = 5*id
+    topics = TopicInformation.objects.order_by('-votes')
+
+    list_length = len(topics)
+
+    if list_length <= last_topic:
+        topics = topics[first_topic:]
+        last_page = True
+        first_page = False
+    elif id == 1:
+        topics = topics[first_topic:last_topic]
+        first_page = True
+        last_page = False
+    else:
+        topics = topics[first_topic:last_topic]
+        first_page = False
+        last_page = False
+
+    next_page = id + 1
+    previous_page = id - 1
+
     query = request.GET.get('q')
     if query:
         topics = TopicInformation.objects.filter(
@@ -17,39 +79,48 @@ def index(request):
             Q(small_description__icontains=query) |
             Q(big_description__icontains=query)
         )
+
     context = {
         'topics':
-            topics,
+            topics, 'first_page': first_page, 'last_page': last_page,
+        'next_page': next_page, 'previous_page': previous_page
     }
+
     return render(request, 'WebApp/index.html', context)
 
 
 def downvoteMain(request, id):
 
+    previous_url = request.META.get('HTTP_REFERER')
+
     if 'downvoted' + str(id) in request.COOKIES:
         value = request.COOKIES['downvoted'+ str(id)]
         if value == 'YES':
             messages.success(request, 'You have already downvoted that')
-            response = HttpResponseRedirect(reverse('index'))
+            #response = HttpResponseRedirect(reverse('index'))
+            response = redirect(previous_url)
         elif value == 'PLUS':
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes -= 1
             Topic.save()
-            response = HttpResponseRedirect(reverse('index'))
+            #response = HttpResponseRedirect(reverse('index'))
+            response = redirect(previous_url)
             response.set_cookie('downvoted' + str(id), 'NO')
             response.set_cookie('upvoted' + str(id), 'NO')
         else:
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes -= 1
             Topic.save()
-            response = HttpResponseRedirect(reverse('index'))
+            #response = HttpResponseRedirect(reverse('index'))
+            response = redirect(previous_url)
             response.set_cookie('upvoted' + str(id), 'PLUS')
             response.set_cookie('downvoted' + str(id), 'YES')
     else:
         Topic = TopicInformation.objects.get(pk=id)
         Topic.votes -= 1
         Topic.save()
-        response = HttpResponseRedirect(reverse('index'))
+        response = redirect(previous_url)
+        #response = HttpResponseRedirect(reverse('index'))
         response.set_cookie('downvoted' + str(id), 'YES')
         response.set_cookie('upvoted' + str(id), 'PLUS')
 
@@ -57,23 +128,26 @@ def downvoteMain(request, id):
 
 
 def upvoteMain(request, id):
+
+    previous_url = request.META.get('HTTP_REFERER')
+
     if 'upvoted' + str(id) in request.COOKIES:
         value = request.COOKIES['upvoted' + str(id)]
         if value == 'YES':
             messages.success(request, 'You have already upvoted that')
-            response = HttpResponseRedirect(reverse('index'))
+            response = redirect(previous_url)
         elif value == 'PLUS':
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes += 1
             Topic.save()
-            response = HttpResponseRedirect(reverse('index'))
+            response = redirect(previous_url)
             response.set_cookie('upvoted' + str(id), 'NO')
             response.set_cookie('downvoted' + str(id), 'NO')
         else:
             Topic = TopicInformation.objects.get(pk=id)
             Topic.votes += 1
             Topic.save()
-            response = HttpResponseRedirect(reverse('index'))
+            response = redirect(previous_url)
             response.set_cookie('upvoted' + str(id), 'YES')
             response.set_cookie('downvoted' + str(id), 'PLUS')
 
@@ -81,7 +155,7 @@ def upvoteMain(request, id):
         Topic = TopicInformation.objects.get(pk=id)
         Topic.votes += 1
         Topic.save()
-        response = HttpResponseRedirect(reverse('index'))
+        response = redirect(previous_url)
         response.set_cookie('upvoted' + str(id), 'YES')
         response.set_cookie('downvoted' + str(id), 'PLUS')
     return response

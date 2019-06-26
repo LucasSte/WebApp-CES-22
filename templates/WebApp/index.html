@@ -31,7 +31,8 @@
             </div>
             <div class="content">
                 <li><a href="/Topics/{{topic.id}}">{{topic.title_text}}</a>
-                    <br> {{topic.small_description}}<br>
+                    <br> {{topic.small_description}}
+                    <br> Creator: {{topic.creator}}<br>
                 <br> </li>
             </div>
         </div>
@@ -39,6 +40,32 @@
 
     {% endfor %}
 </ul>
+
+{% if not search %}
+{% if first_page %}
+<form action="{% url 'load_page' next_page %}" method="GET">
+    <button type="submit">Next page</button>
+</form>
+
+{% elif last_page %}
+<form action="{% url 'load_page' previous_page %}" method="GET">
+    <button type="submit">Previous page</button>
+</form>
+
+{% else %}
+<form action="{% url 'load_page' next_page %}" method="GET">
+    <button type="submit">Next page</button>
+</form>
+<br>
+<form action="{% url 'load_page' previous_page %}" method="GET">
+    <button type="submit">Previous page</button>
+</form>
+
+{% endif %}
+{% endif %}
+
+
+
 {% else %}
 <p>No topics found using the search query "{{ request.GET.q }}".</p>
 {% endif %}

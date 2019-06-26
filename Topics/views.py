@@ -1,19 +1,11 @@
-from django.shortcuts import HttpResponseRedirect
 from .models import *
 from .forms import *
 from django.urls import reverse
-from django.shortcuts import render
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
-
-def index(request):
-    best_topic = TopicInformation.objects.order_by('votes')
-    context = {
-        'best_voted_topics':
-            best_topic,
-    }
-    return render(request, 'Topics/index.html', context)
+from django.template.loader import render_to_string
 
 
 def detail(request, id):
@@ -32,9 +24,9 @@ def detail(request, id):
             comment_qs = None
             if reply_id:
                 comment_qs = Comment.objects.get(id=reply_id)
-            comment = Comment.objects.create(topic=topic, user= request.user, content=content, reply=comment_qs)
+            comment = Comment.objects.create(topic=topic, user=request.user, content=content, reply=comment_qs)
             comment.save()
-            #return HttpResponseRedirect(topic.get_abso lute_url())
+            # return HttpResponseRedirect(topic.get_absolute_url())
     else:
         comment_form = CommentForm()
 
@@ -44,6 +36,10 @@ def detail(request, id):
         'comments': comments,
         'comment_form': comment_form,
     }
+
+    if request.is_ajax():
+        html = render_to_string('Topics/comments.html', context, request=request)
+        return JsonResponse({'form': html})
 
     return render(request, 'Topics/detail.html', context)
 
@@ -120,6 +116,7 @@ def newEntry(request):
             new_topic.small_description = request.POST.get('small_description')
             new_topic.big_description = request.POST.get('big_description')
             new_topic.pub_date = timezone.now()
+            new_topic.creator = request.user.get_username()
             new_topic.votes = 0
             new_topic.save()
             return render(request, 'Topics/detail.html', {'topic': new_topic})
@@ -130,5 +127,19 @@ def newEntry(request):
         return render(request, 'Topics/new_entry.html')
 
 
-
-# Create your views here.
+def post_edit(request, id):
+    topic = get_object_or_404(TopicInformation, id=id)
+    if topic.creator != request.user.get_username():
+        raise Http404()
+    if request.method == 'POST':
+        form = PostEditForm(request.POST or None, instance=topic)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(topic.get_absolute_url())
+    else:
+        form = PostEditForm(instance=topic)
+    context = {
+        'form': form,
+        'topic': topic,
+    }
+    return render(request, 'WebApp/post_edit.html', context)
