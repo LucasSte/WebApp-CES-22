@@ -1,0 +1,12 @@
+<form action="{% url 'Topics:upvote' topic.id %}" method='post'>
+    {% csrf_token %}
+    <button type='submit' class="btn btn-outline-success">Upvote</button>
+</form>
+<br>
+Votes: <br> {{topic.votes}}
+<br>
+<br>
+<form action="{% url 'Topics:downvote' topic.id %}" method='post'>
+    {% csrf_token %}
+    <button type='submit' class="btn btn-outline-danger">Downvote</button>
+</form>

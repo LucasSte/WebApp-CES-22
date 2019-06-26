@@ -40,68 +40,34 @@ def detail(request, id):
     return render(request, 'Topics/detail.html', context)
 
 
-def upVote(request, id):
-    if 'upvoted' + str(id) in request.COOKIES:
-        value = request.COOKIES['upvoted' + str(id)]
-        if value == 'YES':
-            messages.success(request, 'You have already upvoted that')
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        elif value == 'PLUS':
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes += 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('upvoted' + str(id), 'NO')
-            response.set_cookie('downvoted' + str(id), 'NO')
-        else:
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes += 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('upvoted' + str(id), 'YES')
-            response.set_cookie('downvoted' + str(id), 'PLUS')
-
+def upvote(request, id):
+    topic = get_object_or_404(TopicInformation, id=id)
+    if topic.upvotes_users.filter(id=request.user.id).exists():
+        topic.upvotes_users.remove(request.user)
+        topic.votes = topic.votes - 1
     else:
-        Topic = TopicInformation.objects.get(pk=id)
-        Topic.votes += 1
-        Topic.save()
-        response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        response.set_cookie('upvoted' + str(id), 'YES')
-        response.set_cookie('downvoted' + str(id), 'PLUS')
+        topic.upvotes_users.add(request.user)
+        topic.votes = topic.votes + 1
+        if topic.downvotes_users.filter(id=request.user.id).exists():
+            topic.downvotes_users.remove(request.user)
+            topic.votes = topic.votes + 1
+    topic.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-    return response
 
-
-def downVote(request, id):
-
-    if 'downvoted' + str(id) in request.COOKIES:
-        value = request.COOKIES['downvoted'+ str(id)]
-        if value == 'YES':
-            messages.success(request, 'You have already downvoted that')
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        elif value == 'PLUS':
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes -= 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('downvoted' + str(id), 'NO')
-            response.set_cookie('upvoted' + str(id), 'NO')
-        else:
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes -= 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('upvoted' + str(id), 'PLUS')
-            response.set_cookie('downvoted' + str(id), 'YES')
+def downvote(request, id):
+    topic = get_object_or_404(TopicInformation, id=id)
+    if topic.downvotes_users.filter(id=request.user.id).exists():
+        topic.downvotes_users.remove(request.user)
+        topic.votes = topic.votes + 1
     else:
-        Topic = TopicInformation.objects.get(pk=id)
-        Topic.votes -= 1
-        Topic.save()
-        response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        response.set_cookie('downvoted' + str(id), 'YES')
-        response.set_cookie('upvoted' + str(id), 'PLUS')
-
-    return response
+        topic.downvotes_users.add(request.user)
+        topic.votes = topic.votes - 1
+        if topic.upvotes_users.filter(id=request.user.id).exists():
+            topic.upvotes_users.remove(request.user)
+            topic.votes = topic.votes - 1
+    topic.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def newEntry(request):

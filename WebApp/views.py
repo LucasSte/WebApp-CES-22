@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.shortcuts import HttpResponse, HttpResponseRedirect
+from django.shortcuts import HttpResponse, HttpResponseRedirect, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from .forms import UserLoginForm, UserRegistrationForm
@@ -61,78 +61,6 @@ def proper_pagination(posts, index):
         start_index = posts.number - index
         end_index = start_index + end_index
     return start_index, end_index
-
-
-def downvoteMain(request, id):
-
-    previous_url = request.META.get('HTTP_REFERER')
-
-    if 'downvoted' + str(id) in request.COOKIES:
-        value = request.COOKIES['downvoted'+ str(id)]
-        if value == 'YES':
-            messages.success(request, 'You have already downvoted that')
-            #response = HttpResponseRedirect(reverse('index'))
-            response = redirect(previous_url)
-        elif value == 'PLUS':
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes -= 1
-            Topic.save()
-            #response = HttpResponseRedirect(reverse('index'))
-            response = redirect(previous_url)
-            response.set_cookie('downvoted' + str(id), 'NO')
-            response.set_cookie('upvoted' + str(id), 'NO')
-        else:
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes -= 1
-            Topic.save()
-            #response = HttpResponseRedirect(reverse('index'))
-            response = redirect(previous_url)
-            response.set_cookie('upvoted' + str(id), 'PLUS')
-            response.set_cookie('downvoted' + str(id), 'YES')
-    else:
-        Topic = TopicInformation.objects.get(pk=id)
-        Topic.votes -= 1
-        Topic.save()
-        response = redirect(previous_url)
-        #response = HttpResponseRedirect(reverse('index'))
-        response.set_cookie('downvoted' + str(id), 'YES')
-        response.set_cookie('upvoted' + str(id), 'PLUS')
-
-    return response
-
-
-def upvoteMain(request, id):
-
-    previous_url = request.META.get('HTTP_REFERER')
-
-    if 'upvoted' + str(id) in request.COOKIES:
-        value = request.COOKIES['upvoted' + str(id)]
-        if value == 'YES':
-            messages.success(request, 'You have already upvoted that')
-            response = redirect(previous_url)
-        elif value == 'PLUS':
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes += 1
-            Topic.save()
-            response = redirect(previous_url)
-            response.set_cookie('upvoted' + str(id), 'NO')
-            response.set_cookie('downvoted' + str(id), 'NO')
-        else:
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes += 1
-            Topic.save()
-            response = redirect(previous_url)
-            response.set_cookie('upvoted' + str(id), 'YES')
-            response.set_cookie('downvoted' + str(id), 'PLUS')
-
-    else:
-        Topic = TopicInformation.objects.get(pk=id)
-        Topic.votes += 1
-        Topic.save()
-        response = redirect(previous_url)
-        response.set_cookie('upvoted' + str(id), 'YES')
-        response.set_cookie('downvoted' + str(id), 'PLUS')
-    return response
 
 
 def user_login(request):
