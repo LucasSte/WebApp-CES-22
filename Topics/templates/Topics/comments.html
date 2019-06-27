@@ -1,6 +1,6 @@
 <div class="container-fluid mt-2">
     <div class="form-group row">
-        <form method="post">
+        <form method="post" class="comment-form" action=".">
             {% csrf_token %}
             {{ comment_form.as_p }}
             {% if request.user.is_authenticated %}
@@ -14,13 +14,28 @@
 
 {{ comments.count }} Comment{{ comments|pluralize }}
 {% for comment in comments%}
- <blockquote class="blockquote">
-     <p class="mb-0"> {{ comment.content }}</p>
-     <footer class="blockquote-footer">by <cite title="Source Title">{{comment.user|capfirst}}</cite>
-     </footer>
- </blockquote>
+<blockquote class="blockquote">
+    <p class="mb-0"> {{ comment.content }}</p>
+    <footer class="blockquote-footer">by <cite title="Source Title">{{comment.user|capfirst}}</cite>
+        <button type="button" name="button" class="reply-btn btn btn-outline-dark btn-sm ml-2">Reply</button>
+    </footer>
+</blockquote>
+
+<div class="form-group-reply row ml-2" style="display: none;">
+    <form method="post" class="reply-form" action=".">
+        {% csrf_token %}
+        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+        {{ comment_form.as_p }}
+        {% if request.user.is_authenticated %}
+        <input type="submit" value="Submit" class="btn btn-outline-success">
+        {% else %}
+        <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
+        {% endif %}
+    </form>
+</div>
 
 <div class="replied-comments container mt-2">
+
     {%for reply in comment.replies.all%}
     <blockquote class="blockquote">
          <p class="mb-0"> {{ reply.content }}</p>
@@ -28,21 +43,6 @@
          </footer>
      </blockquote>
     {%endfor%}
-    <details><summary> Reply</summary>
-        <div class="form-group row ml-2">
-            <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                {{ comment_form.as_p }}
-                {% if request.user.is_authenticated %}
-                <input type="submit" value="Submit" class="btn btn-outline-success">
-                {% else %}
-                <input type="submit" value="Submit" class="btn btn-outline-success" disabled>
-                {% endif %}
-            </form>
-        </div>
-
-    </details>
 </div>
 
 

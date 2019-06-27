@@ -27,7 +27,7 @@
         {% if request.user.is_authenticated %}
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span>Hi {{ request.user }}!</span>
+              <span style="color: orange;">Hi {{ request.user }}!</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'Topics:new' %}">Post</a>
@@ -53,6 +53,61 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(event) {
+
+        $('.reply-btn').click(function() {
+            $(this).parent().parent().next('.form-group-reply').fadeToggle()
+        });
+
+        $(document).on('submit', '.comment-form', function (event) {
+            event.preventDefault();
+            console.log($(this).serialize());
+            $.ajax({
+                type: 'post',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    $('.main-comment-section').html(response['form']);
+                    $('textarea').val('');
+                    $('.reply-btn').click(function() {
+                        $(this).parent().parent().next('.form-group-reply').fadeToggle();
+                        $('textarea').val('');
+              });
+                },
+                error: function (rs, e) {
+                    console.log(rs.responseText);
+                },
+            });
+        });
+
+        $(document).on('submit', '.reply-form', function(event){
+            event.preventDefault();
+            console.log($(this).serialize());
+            $.ajax({
+                type: 'post',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    $('.main-comment-section').html(response['form']);
+                    $('textarea').val('');
+                    $('.reply-btn').click(function() {
+                        $(this).parent().parent().next('.form-group-reply').fadeToggle();
+                        $('textarea').val('');
+                    });
+                },
+                error: function(rs, e) {
+                    console.log(rs.responseText);
+                },
+            });
+        });
+    });
+</script>
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(() => {

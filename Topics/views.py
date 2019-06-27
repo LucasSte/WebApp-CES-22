@@ -1,8 +1,7 @@
-from django.shortcuts import HttpResponseRedirect
 from .models import *
 from .forms import *
 from django.urls import reverse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.http import Http404, JsonResponse
 from django.contrib import messages
 from django.utils import timezone
@@ -38,49 +37,61 @@ def detail(request, id):
         'comment_form': comment_form,
     }
 
+    if request.is_ajax():
+        html = render_to_string('Topics/comments.html', context, request=request)
+        return JsonResponse({'form': html})
+
     return render(request, 'Topics/detail.html', context)
 
 
 def upvote(request):
-    topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
-    if topic.upvotes_users.filter(id=request.user.id).exists():
-        topic.upvotes_users.remove(request.user)
-        topic.votes = topic.votes - 1
-    else:
-        topic.upvotes_users.add(request.user)
-        topic.votes = topic.votes + 1
-        if topic.downvotes_users.filter(id=request.user.id).exists():
-            topic.downvotes_users.remove(request.user)
-            topic.votes = topic.votes + 1
-    topic.save()
-    context = {
-        'topic': topic,
-    }
-    if request.is_ajax():
-        html = render_to_string('Topics/vote_section.html', context, request=request)
-        return JsonResponse({'form': html})
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-def downvote(request):
-    topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
-    if topic.downvotes_users.filter(id=request.user.id).exists():
-        topic.downvotes_users.remove(request.user)
-        topic.votes = topic.votes + 1
-    else:
-        topic.downvotes_users.add(request.user)
-        topic.votes = topic.votes - 1
+    if request.user.is_authenticated:
+        topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
         if topic.upvotes_users.filter(id=request.user.id).exists():
             topic.upvotes_users.remove(request.user)
             topic.votes = topic.votes - 1
-    topic.save()
-    context = {
-        'topic': topic,
-    }
-    if request.is_ajax():
-        html = render_to_string('Topics/vote_section.html', context, request=request)
-        return JsonResponse({'form': html})
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            topic.upvotes_users.add(request.user)
+            topic.votes = topic.votes + 1
+            if topic.downvotes_users.filter(id=request.user.id).exists():
+                topic.downvotes_users.remove(request.user)
+                topic.votes = topic.votes + 1
+        topic.save()
+        context = {
+            'topic': topic,
+        }
+        if request.is_ajax():
+            html = render_to_string('Topics/vote_section.html', context, request=request)
+            return JsonResponse({'form': html})
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        messages.success(request, 'Login first to upvote')
+        return HttpResponseRedirect(reverse('user_login'))
+
+
+def downvote(request):
+    if request.user.is_authenticated:
+        topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
+        if topic.downvotes_users.filter(id=request.user.id).exists():
+            topic.downvotes_users.remove(request.user)
+            topic.votes = topic.votes + 1
+        else:
+            topic.downvotes_users.add(request.user)
+            topic.votes = topic.votes - 1
+            if topic.upvotes_users.filter(id=request.user.id).exists():
+                topic.upvotes_users.remove(request.user)
+                topic.votes = topic.votes - 1
+        topic.save()
+        context = {
+            'topic': topic,
+        }
+        if request.is_ajax():
+            html = render_to_string('Topics/vote_section.html', context, request=request)
+            return JsonResponse({'form': html})
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        messages.success(request, 'Login first to downvote')
+        return HttpResponseRedirect(reverse('user_login'))
 
 
 def newEntry(request):

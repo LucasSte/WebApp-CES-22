@@ -15,16 +15,28 @@ header{
     top: 1%;
     font-size: 15px;
 }
-.div2{
+
+
+.content{
     padding-left: 10px;
-    font-size: 18px;
-    text-align: center;
 }
 
-.div1 a{
-    font: revert;
-    color: orange;
-    text-decoration: none;
+.index_title{
+    text-align: center;
+    font-size: 25px;
+    border-bottom: 2px dotted black;
+    padding: 2px;
+}
+
+.index_creator{
+    text-align: center;
+    font-size: 15px;
+    color: rgba(0,0,0,0.56);
+}
+
+.index_descripton{
+    text-align: center;
+    position: center;
 }
 
 .title{
@@ -53,10 +65,6 @@ header{
     position: relative;
     top: 5%;
     font-size: 15px;
-}
-.content{
-    padding-left: 10px;
-    font-size: 18px;
 }
 
 .box{
