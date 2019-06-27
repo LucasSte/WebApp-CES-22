@@ -103,6 +103,38 @@ header{
     text-align: center;
 }
 
+.login_box{
+    background-color: lightgrey;
+    padding: 10px;
+    width: 50%;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.new_topic_box{
+    background-color: lightgrey;
+    padding: 10px;
+    width: 60%;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.login_header{
+    text-align: center;
+    font-weight: bold;
+    font-size: 40px;
+    color: black;
+    border-bottom: 2px dotted black;
+    padding: 5px;
+}
+
+#username{
+    text-align: center;
+}
+
+#password{
+    text-align: center;
+}
 
 /*Comments part: */
 
@@ -127,7 +159,3 @@ header{
     border-radius: 10px;
 
 }
-
-.
-
-

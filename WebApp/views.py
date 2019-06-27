@@ -77,7 +77,12 @@ def user_login(request):
                 else:
                     return HttpResponse('User is not active')
             else:
-                return HttpResponse('Wrong user or password!')
+                form = UserLoginForm()
+                context = {
+                    'form': form,
+                }
+                messages.success(request, 'Wrong username or password')
+                return render(request, 'WebApp/login.html', context)
     else:
         form = UserLoginForm()
 
