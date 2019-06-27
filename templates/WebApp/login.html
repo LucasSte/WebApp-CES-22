@@ -5,20 +5,41 @@
 {% block content %}
 
 {% if messages %}
-<ul class="messages">
+<ul class="messages" style="text-align: center;">
     {% for message in messages %}
-    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    <div class="alert alert-danger" role="alert" style="width: 97%; text-align: center;">
+        {{ message }}
+    </div>
     {% endfor %}
 </ul>
 {% endif %}
 
-<h2>Login</h2>
-<form method="post">
+<div class="login_box">
+<h2 class="login_header">Login</h2>
+<form method="post" >
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Login" class="btn-btn-outline-success">
-    <small>
-        <a href="{% url 'register' %}">Register</a>
-    </small>
+    <br>
+    <div class="input-group mb-3" style="width: 80%; margin-left: auto; margin-right: auto;">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Username:</span>
+    </div>
+        <input id="username" name="username" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    </div>
+    <br>
+    <div class="input-group mb-3" style="width: 80%; margin-left: auto; margin-right: auto;">
+        <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Password:</span>
+        </div>
+        <input id="password" name="password" type="password" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div style="text-align: center;">
+    <button type="submit" value="Login" class="btn btn-primary" style="horiz-align: center;">
+        Login
+    </button>
+    <br>
+        <br>
+            <a class="btn btn-primary" href="{% url 'register' %}" role="button">Register</a>
+        </div>
 </form>
+</div>
 {% endblock %}
