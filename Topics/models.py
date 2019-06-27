@@ -6,14 +6,14 @@ from django.urls import reverse
 
 
 class TopicInformation(models.Model):
-    title_text = models.CharField(max_length=50)
+    title_text = models.CharField(max_length=50, default="")
     small_description = models.TextField(max_length=500)
     pub_date = models.DateField('date published')
     votes = models.IntegerField(default=0)
     upvotes_users = models.ManyToManyField(User, related_name="upvotes_users", blank=True)
     downvotes_users = models.ManyToManyField(User, related_name="downvotes_users", blank=True)
     big_description = models.TextField(max_length=10000)
-    creator = models.CharField(max_length=50)
+    creator = models.CharField(max_length=50, default="")
 
     def __str__(self):
         return self.big_description
