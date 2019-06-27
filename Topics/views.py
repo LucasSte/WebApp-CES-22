@@ -128,7 +128,7 @@ def newEntry(request):
             new_topic.creator = request.user.get_username()
             new_topic.votes = 0
             new_topic.save()
-            return render(request, 'Topics/detail.html', {'topic': new_topic})
+            return HttpResponseRedirect(new_topic.get_absolute_url(), {'topic': new_topic})
         else:
             messages.success(request, 'Fill all the spaces, before submitting.')
             return render(request, 'Topics/new_entry.html')

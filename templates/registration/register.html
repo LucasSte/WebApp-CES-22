@@ -1,11 +1,68 @@
 {% extends 'WebApp/base.html' %}
+{% load widget_tweaks %}
 
-{% block title %} Registration {% endblock %}
+{% block title %}Registration{% endblock %}
 
 {% block content %}
-    <form method="post">
+{% for hidden_field in form.hidden_fields %}
+    {{ hidden_field }}
+{% endfor %}
+{% if messages %}
+<ul class="messages" style="text-align: center;">
+    {% for message in messages %}
+    <div class="alert alert-danger" role="alert" style="width: 97%; text-align: center;">
+        {{ message }}
+    </div>
+    {% endfor %}
+</ul>
+{% endif %}
+ {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+{% endif %}
+<br>
+<body>
+<div class="new_topic_box">
+    <h2 class="login_header">{{ topic.title_text }}</h2>
+    <form action="" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" class="btn-btn-outline-success">
+        {% for field in form.visible_fields %}
+        <div class="form-group">
+          {{ field.label_tag }}
+
+          {% if form.is_bound %}
+            {% if field.errors %}
+              {% render_field field class="form-control is-invalid" %}
+              {% for error in field.errors %}
+                <div class="invalid-feedback">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% render_field field class="form-control is-valid" %}
+            {% endif %}
+          {% else %}
+            {% render_field field class="form-control" %}
+          {% endif %}
+
+          {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+          {% endif %}
+        </div>
+      {% endfor %}
+        <div style="text-align: center">
+            <button type="submit" value="Submit" class="btn btn-primary" style="horiz-align: center;">
+                Submit
+            </button>
+        </div>
     </form>
+    <br>
+    <div style="text-align: center">
+        <a class="btn btn-danger" href="{% url 'index' %}" role="button">Cancel</a>
+    </div>
+</div>
+</body>
 {% endblock %}

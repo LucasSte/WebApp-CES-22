@@ -31,7 +31,7 @@
         {% include 'Topics/vote_section.html' %}
     </div>
     <div class="div2">
-        <p class="small_description"> {{topic.small_description}} </p>
+        <p class="small_description"> {{topic.small_description|linebreaks}} </p>
         <br>
         <p> <button class="btn btn-outline-dark btn-sm" type="button" data-toggle="collapse" data-target="#collapseDescription" aria-expanded="false" aria-controls="collapseDescription">
             More information
@@ -40,7 +40,7 @@
         <div class="collapse" id="collapseDescription">
             <div class="collapse_description">
                 <br>
-                {{topic.big_description}}
+                {{topic.big_description|linebreaks}}
                 <br>
                 <br>
             </div>

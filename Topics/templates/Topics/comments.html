@@ -13,13 +13,13 @@
 </div>
 
 <div class="comment-counter">
-    {{ comments.count }} Comment{{ comments|pluralize }}
+    {{ comments.count }} comment{{ comments|pluralize }}
 </div>
 <br>
 {% for comment in comments%}
 <div class="comment-box">
     <blockquote class="blockquote">
-        <p class="mb-0"> {{ comment.content }}</p>
+        <p class="mb-0"> {{ comment.content|linebreaks }}</p>
         <footer class="blockquote-footer">by <cite title="Source Title">{{comment.user|capfirst}}</cite>
             <button type="button" name="button" class="reply-btn btn btn-outline-dark btn-sm ml-2">Reply</button>
         </footer>
@@ -42,7 +42,7 @@
 
         {%for reply in comment.replies.all%}
         <blockquote class="blockquote">
-            <p class="mb-0"> {{ reply.content }}</p>
+            <p class="mb-0"> {{ reply.content|linebreaks }}</p>
             <footer class="blockquote-footer">by <cite title="Source Title">{{reply.user|capfirst}}</cite>
             </footer>
         </blockquote>

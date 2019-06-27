@@ -20,22 +20,22 @@
     <form action="" method="POST">
         {% csrf_token %}
         <br>
-        <div class="input-group mb-3" style="width: 90%; margin-left: auto; margin-right: auto;">
+        <div class="input-group mb-3" style="width: 80%; margin-left: auto; margin-right: auto;">
         <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-default">Title:</span>
         </div>
         <input id="title" name="title" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
     </div>
         <br>
-        <div class="input-group mb-3" style="width: 90%; margin-left: auto; margin-right: auto;">
+        <div class="input-group mb-4" style="width: 80%; margin-left: auto; margin-right: auto;">
         <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default">Description: <br> (Up to 150 carachters)</span>
+        <span class="input-group-text" id="inputGroup-sizing-default">Description: <br> (Up to 150 characters)</span>
         </div>
             <textarea id="small_description" name="small_description" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" rows="5"> </textarea>
     </div>
 
         <br>
-        <div class="input-group input-group-lg" style="width: 90%; margin-left: auto; margin-right: auto;">
+        <div class="input-group input-group-lg" style="width: 80%; margin-left: auto; margin-right: auto;">
         <div class="input-group-prepend">
          <span class="input-group-text" id="inputGroup-sizing-lg">Further Details:</span>
          </div>
@@ -50,7 +50,7 @@
     </form>
     <br>
     <div style="text-align: center">
-    <a class="btn btn-danger" href="{% url 'index' %}" role="button">Cancel</a></button>
+    <a class="btn btn-danger" href="{% url 'index' %}" role="button">Cancel</a>
 </div>
     </div>
 </body>

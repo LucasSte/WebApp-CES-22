@@ -34,7 +34,7 @@ header{
     color: rgba(0,0,0,0.56);
 }
 
-.index_descripton{
+.index_description{
     text-align: center;
     position: center;
 }
@@ -72,7 +72,7 @@ header{
     grid-template-columns: 20% 80%;
     width: 60%;
     background-color: lightgrey;
-    padding: 10px;
+    padding: 30px;
     margin: auto;
     border-radius: 10px;
 }
@@ -81,7 +81,7 @@ header{
     text-align: center;
     background-color: lightgrey;
     width: 60%;
-    padding: 0;
+    padding: 30px;
     border: 0;
     margin: auto;
     border-radius: 10px;
@@ -113,7 +113,7 @@ header{
 
 .new_topic_box{
     background-color: lightgrey;
-    padding: 10px;
+    padding: 40px;
     width: 60%;
     margin: auto;
     border-radius: 10px;
@@ -128,12 +128,12 @@ header{
     padding: 5px;
 }
 
-#username{
-    text-align: center;
-}
-
-#password{
-    text-align: center;
+@media (min-width: 576px) {
+    .login_field{
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 /*Comments part: */
@@ -158,4 +158,8 @@ header{
     background-color: lightgrey;
     border-radius: 10px;
 
+}
+
+p, h2{
+    overflow-wrap: break-word;
 }
