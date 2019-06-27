@@ -102,3 +102,32 @@ header{
     color: black;
     text-align: center;
 }
+
+
+/*Comments part: */
+
+.comment-form{
+    width: 55%;
+    margin: auto;
+}
+.comment-counter{
+    font-size: medium;
+    width: 60%;
+    margin: auto;
+}
+
+.comment-box{
+    font-size: medium;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 2px;
+    width: 55%;
+    margin: auto;
+    background-color: lightgrey;
+    border-radius: 10px;
+
+}
+
+.
+
+
