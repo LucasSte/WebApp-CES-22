@@ -23,8 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = config('SECRET_KEY') # to hide sensitive data
-SECRET_KEY = 'ugr@jvndzh50$hg+4k%jgy-#l$11$w3s2e#xxs2q6xz1)@br=m'
+SECRET_KEY = config('SECRET_KEY') # to hide sensitive data
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
@@ -88,16 +87,15 @@ WSGI_APPLICATION = 'WebApp.wsgi.application'
 # db_from_env = dj_database_url.config()
 # DATABASES['default'].update(db_from_env)
 
-DATABASE_URL = 'postgres://xhnxerunpwwbfc:7ceb7c2d29c94492c058a75dd1a9ab2064ccfd3e12243da1c62765b73cc11e8e@ec2-23-21-91-183.compute-1.amazonaws.com:5432/dedrbia1ltuvck'
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+conn = psycopg2.connect(config('DATABASE_URL'), sslmode='require')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dedrbia1ltuvck',
-        'USER': 'xhnxerunpwwbfc',
-        'PASSWORD': '7ceb7c2d29c94492c058a75dd1a9ab2064ccfd3e12243da1c62765b73cc11e8e',
-        'HOST': 'ec2-23-21-91-183.compute-1.amazonaws.com',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
         'PORT': '5432',
     }
 }
