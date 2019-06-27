@@ -30,11 +30,26 @@ def detail(request, id):
     else:
         comment_form = CommentForm()
 
+    if request.user.is_authenticated:
+        topic = get_object_or_404(TopicInformation, id=id)
+        if topic.upvotes_users.filter(id=request.user.id).exists():
+            upvoted = True
+        else:
+            upvoted = False
+        if topic.downvotes_users.filter(id=request.user.id).exists():
+            downvoted = True
+        else:
+            downvoted = False
+    else:
+        upvoted = False
+        downvoted = False
 
     context = {
         'topic': topic,
         'comments': comments,
         'comment_form': comment_form,
+        'upvoted': upvoted,
+        'downvoted': downvoted,
     }
 
     if request.is_ajax():
@@ -50,15 +65,19 @@ def upvote(request):
         if topic.upvotes_users.filter(id=request.user.id).exists():
             topic.upvotes_users.remove(request.user)
             topic.votes = topic.votes - 1
+            upvoted = False
         else:
             topic.upvotes_users.add(request.user)
             topic.votes = topic.votes + 1
+            upvoted = True
             if topic.downvotes_users.filter(id=request.user.id).exists():
                 topic.downvotes_users.remove(request.user)
                 topic.votes = topic.votes + 1
         topic.save()
         context = {
             'topic': topic,
+            'upvoted': upvoted,
+            'downvoted': False,
         }
         if request.is_ajax():
             html = render_to_string('Topics/vote_section.html', context, request=request)
@@ -75,15 +94,19 @@ def downvote(request):
         if topic.downvotes_users.filter(id=request.user.id).exists():
             topic.downvotes_users.remove(request.user)
             topic.votes = topic.votes + 1
+            downvoted = False
         else:
             topic.downvotes_users.add(request.user)
             topic.votes = topic.votes - 1
+            downvoted = True
             if topic.upvotes_users.filter(id=request.user.id).exists():
                 topic.upvotes_users.remove(request.user)
                 topic.votes = topic.votes - 1
         topic.save()
         context = {
             'topic': topic,
+            'upvoted': False,
+            'downvoted': downvoted,
         }
         if request.is_ajax():
             html = render_to_string('Topics/vote_section.html', context, request=request)

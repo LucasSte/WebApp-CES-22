@@ -1,6 +1,19 @@
+{% load index %}
 <form action="{% url 'Topics:upvote'%}" method='post'>
     {% csrf_token %}
-    <button type='submit' class="btn btn-outline-success upvote" name="topic_id" value="{{ topic.id }}">Upvote</button>
+    {% if first %}
+        {% if upvotes|remove_first %}
+            <button type='submit' class="btn btn-success upvote" name="topic_id" value="{{ topic.id }}">Upvote</button>
+        {% else %}
+            <button type='submit' class="btn btn-outline-success upvote" name="topic_id" value="{{ topic.id }}">Upvote</button>
+        {% endif %}
+    {% else %}
+        {% if upvoted %}
+            <button type='submit' class="btn btn-success upvote" name="topic_id" value="{{ topic.id }}">Upvote</button>
+        {% else %}
+            <button type='submit' class="btn btn-outline-success upvote" name="topic_id" value="{{ topic.id }}">Upvote</button>
+        {% endif %}
+    {% endif %}
 </form>
 <br>
 Votes: <br> {{topic.votes}}
@@ -8,5 +21,17 @@ Votes: <br> {{topic.votes}}
 <br>
 <form action="{% url 'Topics:downvote'%}" method='post'>
     {% csrf_token %}
-    <button type='submit' class="btn btn-outline-danger downvote" name="topic_id" value="{{ topic.id }}">Downvote</button>
+    {% if first %}
+        {% if downvotes|remove_first  %}
+            <button type='submit' class="btn btn-danger downvote" name="topic_id" value="{{ topic.id }}">Downvote</button>
+        {% else %}
+            <button type='submit' class="btn btn-outline-danger downvote" name="topic_id" value="{{ topic.id }}">Downvote</button>
+        {% endif %}
+    {% else %}
+        {% if downvoted %}
+            <button type='submit' class="btn btn-danger downvote" name="topic_id" value="{{ topic.id }}">Downvote</button>
+        {% else %}
+            <button type='submit' class="btn btn-outline-danger downvote" name="topic_id" value="{{ topic.id }}">Downvote</button>
+        {% endif %}
+    {% endif %}
 </form>

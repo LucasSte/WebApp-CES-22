@@ -45,12 +45,32 @@ def index(request):
     else:
         base_page_url = '?page='
 
+    upvotes = []
+    downvotes = []
+    for topic in paginated_topics:
+        if request.user.is_authenticated:
+            if topic.upvotes_users.filter(id=request.user.id).exists():
+                upvotes.append(True)
+            else:
+                upvotes.append(False)
+            if topic.downvotes_users.filter(id=request.user.id).exists():
+                downvotes.append(True)
+            else:
+                downvotes.append(False)
+        else:
+            upvotes.append(False)
+            downvotes.append(False)
+
     context = {
         'topics': paginated_topics,
         'base_page_url': base_page_url,
         'search': search,
         'page_range': page_range,
+        'upvotes': upvotes,
+        'downvotes': downvotes,
+        'first': True,
     }
+
     return render(request, 'WebApp/index.html', context)
 
 

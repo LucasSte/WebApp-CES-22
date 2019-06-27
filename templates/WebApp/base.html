@@ -116,7 +116,6 @@
             event.preventDefault();
             {% endif %}
             let pk = $(this).attr('value');
-            console.log(pk);
             $.ajax({
                 type: 'POST',
                 url: '{% url 'Topics:upvote' %}',
@@ -124,7 +123,7 @@
                 dataType: 'json',
                 success: (response) => {
                     $("#box-"+pk).html(response['form']);
-                    console.log($("#box-"+pk).html(response['form']))
+                    console.log(response['form'])
                 },
                 error: (rs, e) => {
                     console.log(rs.responseText);
