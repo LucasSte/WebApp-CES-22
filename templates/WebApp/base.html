@@ -112,7 +112,9 @@
 <script type="text/javascript">
     $(document).ready(() => {
         $(document).on('click', '.upvote', function(event){
+            {% if user.is_authenticated %}
             event.preventDefault();
+            {% endif %}
             let pk = $(this).attr('value');
             console.log(pk);
             $.ajax({
@@ -132,7 +134,9 @@
     });
     $(document).ready(() => {
         $(document).on('click', '.downvote', function(event){
+            {% if user.is_authenticated %}
             event.preventDefault();
+            {% endif %}
             let pk = $(this).attr('value');
             console.log(pk);
             $.ajax({
