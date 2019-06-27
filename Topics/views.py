@@ -1,11 +1,11 @@
-from django.shortcuts import HttpResponseRedirect
 from .models import *
 from .forms import *
 from django.urls import reverse
-from django.shortcuts import render
-from django.http import Http404
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
+from django.http import Http404, JsonResponse
 from django.contrib import messages
 from django.utils import timezone
+from django.template.loader import render_to_string
 
 def index(request):
     best_topic = TopicInformation.objects.order_by('votes')
@@ -44,6 +44,10 @@ def detail(request, id):
         'comments': comments,
         'comment_form': comment_form,
     }
+    
+    if request.is_ajax():
+        html = render_to_string('Topics/comments.html', context, request=request)
+        return JsonResponse({'form': html})
 
     return render(request, 'Topics/detail.html', context)
 
