@@ -3,9 +3,10 @@ from .models import *
 from .forms import *
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.contrib import messages
 from django.utils import timezone
+from django.template.loader import render_to_string
 
 
 def detail(request, id):
@@ -40,8 +41,8 @@ def detail(request, id):
     return render(request, 'Topics/detail.html', context)
 
 
-def upvote(request, id):
-    topic = get_object_or_404(TopicInformation, id=id)
+def upvote(request):
+    topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
     if topic.upvotes_users.filter(id=request.user.id).exists():
         topic.upvotes_users.remove(request.user)
         topic.votes = topic.votes - 1
@@ -52,11 +53,17 @@ def upvote(request, id):
             topic.downvotes_users.remove(request.user)
             topic.votes = topic.votes + 1
     topic.save()
+    context = {
+        'topic': topic,
+    }
+    if request.is_ajax():
+        html = render_to_string('Topics/vote_section.html', context, request=request)
+        return JsonResponse({'form': html})
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def downvote(request, id):
-    topic = get_object_or_404(TopicInformation, id=id)
+def downvote(request):
+    topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
     if topic.downvotes_users.filter(id=request.user.id).exists():
         topic.downvotes_users.remove(request.user)
         topic.votes = topic.votes + 1
@@ -67,6 +74,12 @@ def downvote(request, id):
             topic.upvotes_users.remove(request.user)
             topic.votes = topic.votes - 1
     topic.save()
+    context = {
+        'topic': topic,
+    }
+    if request.is_ajax():
+        html = render_to_string('Topics/vote_section.html', context, request=request)
+        return JsonResponse({'form': html})
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 

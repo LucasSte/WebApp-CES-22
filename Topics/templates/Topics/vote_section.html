@@ -1,12 +1,12 @@
-<form action="{% url 'Topics:upvote' topic.id %}" method='post'>
+<form action="{% url 'Topics:upvote'%}" method='post'>
     {% csrf_token %}
-    <button type='submit' class="btn btn-outline-success">Upvote</button>
+    <button type='submit' class="btn btn-outline-success upvote" name="topic_id" value="{{ topic.id }}">Upvote</button>
 </form>
 <br>
 Votes: <br> {{topic.votes}}
 <br>
 <br>
-<form action="{% url 'Topics:downvote' topic.id %}" method='post'>
+<form action="{% url 'Topics:downvote'%}" method='post'>
     {% csrf_token %}
-    <button type='submit' class="btn btn-outline-danger">Downvote</button>
+    <button type='submit' class="btn btn-outline-danger downvote" name="topic_id" value="{{ topic.id }}">Downvote</button>
 </form>

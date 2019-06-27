@@ -14,8 +14,10 @@
 {% if topics %}
 <ul>
     {% for topic in topics %}
-        <div class="box" id="box-{{topic.id}}">
-            {% include 'Topics/vote_section.html' %}
+        <div class="box">
+            <div id="box-{{topic.id}}">
+                 {% include 'Topics/vote_section.html' %}
+            </div>
             <div class="content">
                 <li><a href="/Topics/{{topic.id}}">{{topic.title_text}}</a>
                     <br> {{topic.small_description}}
