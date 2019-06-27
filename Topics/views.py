@@ -7,20 +7,13 @@ from django.contrib import messages
 from django.utils import timezone
 from django.template.loader import render_to_string
 
-def index(request):
-    best_topic = TopicInformation.objects.order_by('votes')
-    context = {
-        'best_voted_topics':
-            best_topic,
-    }
-    return render(request, 'Topics/index.html', context)
-
 
 def detail(request, id):
     try:
         topic = TopicInformation.objects.get(pk=id)
     except TopicInformation.DoesNotExist:
         raise Http404("Topic does not exist.")
+
 
     comments = Comment.objects.filter(topic=topic, reply=None).order_by('-id')
 
@@ -52,68 +45,42 @@ def detail(request, id):
     return render(request, 'Topics/detail.html', context)
 
 
-def upVote(request, id):
-    if 'upvoted' + str(id) in request.COOKIES:
-        value = request.COOKIES['upvoted' + str(id)]
-        if value == 'YES':
-            messages.success(request, 'You have already upvoted that')
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        elif value == 'PLUS':
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes += 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('upvoted' + str(id), 'NO')
-            response.set_cookie('downvoted' + str(id), 'NO')
+def upvote(request, id):
+    if request.user.is_authenticated:
+        topic = get_object_or_404(TopicInformation, id=id)
+        if topic.upvotes_users.filter(id=request.user.id).exists():
+            topic.upvotes_users.remove(request.user)
+            topic.votes = topic.votes - 1
         else:
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes += 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('upvoted' + str(id), 'YES')
-            response.set_cookie('downvoted' + str(id), 'PLUS')
+            topic.upvotes_users.add(request.user)
+            topic.votes = topic.votes + 1
+            if topic.downvotes_users.filter(id=request.user.id).exists():
+                topic.downvotes_users.remove(request.user)
+                topic.votes = topic.votes + 1
+        topic.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     else:
-        Topic = TopicInformation.objects.get(pk=id)
-        Topic.votes += 1
-        Topic.save()
-        response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        response.set_cookie('upvoted' + str(id), 'YES')
-        response.set_cookie('downvoted' + str(id), 'PLUS')
+        messages.success(request, 'Login first to upVote')
+        return HttpResponseRedirect(reverse('user_login'))
 
-    return response
-
-
-def downVote(request, id):
-
-    if 'downvoted' + str(id) in request.COOKIES:
-        value = request.COOKIES['downvoted'+ str(id)]
-        if value == 'YES':
-            messages.success(request, 'You have already downvoted that')
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        elif value == 'PLUS':
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes -= 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('downvoted' + str(id), 'NO')
-            response.set_cookie('upvoted' + str(id), 'NO')
+def downvote(request, id):
+    if request.user.is_authenticated:
+        topic = get_object_or_404(TopicInformation, id=id)
+        if topic.downvotes_users.filter(id=request.user.id).exists():
+            topic.downvotes_users.remove(request.user)
+            topic.votes = topic.votes + 1
         else:
-            Topic = TopicInformation.objects.get(pk=id)
-            Topic.votes -= 1
-            Topic.save()
-            response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-            response.set_cookie('upvoted' + str(id), 'PLUS')
-            response.set_cookie('downvoted' + str(id), 'YES')
+            topic.downvotes_users.add(request.user)
+            topic.votes = topic.votes - 1
+            if topic.upvotes_users.filter(id=request.user.id).exists():
+                topic.upvotes_users.remove(request.user)
+                topic.votes = topic.votes - 1
+        topic.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     else:
-        Topic = TopicInformation.objects.get(pk=id)
-        Topic.votes -= 1
-        Topic.save()
-        response = HttpResponseRedirect(reverse('Topics:detail', args=[id]))
-        response.set_cookie('downvoted' + str(id), 'YES')
-        response.set_cookie('upvoted' + str(id), 'PLUS')
-
-    return response
+        messages.success(request, 'Login first to downVote')
+        return HttpResponseRedirect(reverse('user_login'))
 
 
 def newEntry(request):
@@ -124,6 +91,7 @@ def newEntry(request):
             new_topic.small_description = request.POST.get('small_description')
             new_topic.big_description = request.POST.get('big_description')
             new_topic.pub_date = timezone.now()
+            new_topic.creator = request.user.get_username()
             new_topic.votes = 0
             new_topic.save()
             return render(request, 'Topics/detail.html', {'topic': new_topic})
@@ -134,5 +102,19 @@ def newEntry(request):
         return render(request, 'Topics/new_entry.html')
 
 
-
-# Create your views here.
+def post_edit(request, id):
+    topic = get_object_or_404(TopicInformation, id=id)
+    if topic.creator != request.user.get_username():
+        raise Http404()
+    if request.method == 'POST':
+        form = PostEditForm(request.POST or None, instance=topic)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(topic.get_absolute_url())
+    else:
+        form = PostEditForm(instance=topic)
+    context = {
+        'form': form,
+        'topic': topic,
+    }
+    return render(request, 'WebApp/post_edit.html', context)

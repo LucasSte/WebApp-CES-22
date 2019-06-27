@@ -10,32 +10,41 @@
     {% endfor %}
 </ul>
 {% endif %}
-<br>
-<h2>{{topic.title_text}}</h2>
-<p class="date">Date: {{topic.pub_date}}</p>
+
+
+<div class="title_box">
+    <h2 class="title_title">{{topic.title_text}}</h2>
+    <p class="title_content">Date: {{topic.pub_date}} <br> Creator: {{topic.creator}}</p>
+    {% if topic.creator == request.user.get_username %}
+    <a href="{% url 'Topics:post_edit' topic.id %}">
+        <button type="button" class="btn btn-outline-secondary">Edit</button>
+    </a>
+    <br>
+    <br>
+    {% endif %}
+</div>
+
 <br>
 
 <div class="box">
-    <div class="div1">
-        <form action="{% url 'Topics:upvote' topic.id %}" method='post'>
-      {% csrf_token %}
-    <button type='submit'>UpVote</button>
-        </form>
-        <br>
-        Votes: <br> {{topic.votes}}
-        <br>
-        <br>
-    <form action="{% url 'Topics:downvote' topic.id %}" method='post'>
-    {% csrf_token %}
-    <button type='submit'>DownVote</button>
-    </form>
+    <div class="div1" id="box-{{ topic.id }}">
+        {% include 'Topics/vote_section.html' %}
     </div>
     <div class="div2">
         <p class="small_description"> {{topic.small_description}} </p>
         <br>
-        <details> <summary> More information</summary>
-        {{topic.big_description}}
-        </details>
+        <p> <button class="btn btn-outline-dark btn-sm" type="button" data-toggle="collapse" data-target="#collapseDescription" aria-expanded="false" aria-controls="collapseDescription">
+            More information
+        </button>
+        </p>
+        <div class="collapse" id="collapseDescription">
+            <div class="collapse_description">
+                <br>
+                {{topic.big_description}}
+                <br>
+                <br>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -46,6 +55,7 @@
 <div class="main-comment-section ml-4">
     {% include 'Topics/comments.html' %}
 </div>
+
 
 
 {% endblock %}

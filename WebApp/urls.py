@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views
 
-#app_name = 'Main'
 
 urlpatterns = [
     path('Topics/', include('Topics.urls')),
@@ -26,6 +25,4 @@ urlpatterns = [
     path('login/', views.user_login, name="user_login"),
     path('logout/', views.user_logout, name="user_logout"),
     path('register/', views.register, name='register'),
-    path('downvote/<int:id>/', views.downvoteMain, name='downvote_main'),
-    path('upvote/<int:id>/', views.upvoteMain, name='upvote_main')
 ]

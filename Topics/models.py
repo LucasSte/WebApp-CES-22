@@ -1,19 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 # Create your models here.
 
 
 class TopicInformation(models.Model):
     title_text = models.CharField(max_length=50)
-    small_description = models.CharField(max_length=500)
+    small_description = models.TextField(max_length=500)
     pub_date = models.DateField('date published')
     votes = models.IntegerField(default=0)
-    big_description = models.CharField(max_length=10000)
-    #creator = models.CharField(max_length=50)
+    upvotes_users = models.ManyToManyField(User, related_name="upvotes_users", blank=True)
+    downvotes_users = models.ManyToManyField(User, related_name="downvotes_users", blank=True)
+    big_description = models.TextField(max_length=10000)
+    creator = models.CharField(max_length=50)
 
     def __str__(self):
         return self.big_description
+
+    def get_absolute_url(self):
+        return reverse("Topics:detail", args=[self.id])
 
 
 class Comment(models.Model):
