@@ -3,37 +3,56 @@
 {% block title %}New topic entry{% endblock %}
 
 {% block content %}
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+{% if messages %}
+<ul class="messages" style="text-align: center;">
+    {% for message in messages %}
+    <div class="alert alert-danger" role="alert" style="width: 97%; text-align: center;">
+        {{ message }}
+    </div>
+    {% endfor %}
+</ul>
+{% endif %}
 <br>
 {% if user.is_authenticated %}
 <body>
+<div class="new_topic_box">
+    <h2 class="login_header">New topic</h2>
     <form action="" method="POST">
         {% csrf_token %}
-        <label>Title: </label>
-        <input name="title" type="text">
         <br>
+        <div class="input-group mb-3" style="width: 90%; margin-left: auto; margin-right: auto;">
+        <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Title:</span>
+        </div>
+        <input id="title" name="title" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    </div>
         <br>
-        <label>Description (up to 150 characters):</label>
+        <div class="input-group mb-3" style="width: 90%; margin-left: auto; margin-right: auto;">
+        <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Description: <br> (Up to 150 carachters)</span>
+        </div>
+            <textarea id="small_description" name="small_description" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" rows="5"> </textarea>
+    </div>
+
         <br>
-        <textarea name= "small_description" cols="50" rows="8"></textarea>
+        <div class="input-group input-group-lg" style="width: 90%; margin-left: auto; margin-right: auto;">
+        <div class="input-group-prepend">
+         <span class="input-group-text" id="inputGroup-sizing-lg">Further Details:</span>
+         </div>
+            <textarea id="big_description" name="big_description" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm" rows="10"> </textarea>
+        </div>
         <br>
-        <br>
-        <label>Further details:</label>
-        <br>
-        <textarea name= "big_description" cols="50" rows="10"></textarea>
-        <br>
-        <input type="submit" value="Submit">
+            <div style="text-align: center;">
+            <button type="submit" value="Submit" class="btn btn-primary" style="horiz-align: center;">
+                Submit
+            </button>
+            </div>
     </form>
     <br>
-
-    <button type="reset"><a style="text-decoration: none" href="{% url 'index' %}">Cancel</a> </button>
-
+    <div style="text-align: center">
+    <a class="btn btn-danger" href="{% url 'index' %}" role="button">Cancel</a></button>
+</div>
+    </div>
 </body>
 {% else %}
 <h1> You must <a href="{% url 'user_login' %}">log in</a> to create a new topic</h1>

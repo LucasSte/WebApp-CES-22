@@ -14,8 +14,8 @@ class UserLoginForm(forms.Form):
         )
 
 class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter password here...'}))
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm password...'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter password here...'}), label="password")
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm password...'}), label="confirm_password")
 
     class Meta:
         model = User
