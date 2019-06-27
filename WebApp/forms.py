@@ -3,9 +3,15 @@ from django.contrib.auth.models import User
 
 
 class UserLoginForm(forms.Form):
-    username = forms.CharField(label="")
-    password = forms.CharField(label="", widget=forms.PasswordInput)
+    username = forms.CharField(label="username")
+    password = forms.CharField(label="password", widget=forms.PasswordInput)
 
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'password',
+        )
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter password here...'}))
