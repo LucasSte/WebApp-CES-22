@@ -14,7 +14,6 @@ def detail(request, id):
     except TopicInformation.DoesNotExist:
         raise Http404("Topic does not exist.")
 
-
     comments = Comment.objects.filter(topic=topic, reply=None).order_by('-id')
 
     if request.method == 'POST':
@@ -37,7 +36,7 @@ def detail(request, id):
         'comments': comments,
         'comment_form': comment_form,
     }
-    
+
     if request.is_ajax():
         html = render_to_string('Topics/comments.html', context, request=request)
         return JsonResponse({'form': html})
@@ -45,9 +44,9 @@ def detail(request, id):
     return render(request, 'Topics/detail.html', context)
 
 
-def upvote(request, id):
+def upvote(request):
     if request.user.is_authenticated:
-        topic = get_object_or_404(TopicInformation, id=id)
+        topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
         if topic.upvotes_users.filter(id=request.user.id).exists():
             topic.upvotes_users.remove(request.user)
             topic.votes = topic.votes - 1
@@ -58,15 +57,21 @@ def upvote(request, id):
                 topic.downvotes_users.remove(request.user)
                 topic.votes = topic.votes + 1
         topic.save()
+        context = {
+            'topic': topic,
+        }
+        if request.is_ajax():
+            html = render_to_string('Topics/vote_section.html', context, request=request)
+            return JsonResponse({'form': html})
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
     else:
-        messages.success(request, 'Login first to upVote')
+        messages.success(request, 'Login first to upvote')
         return HttpResponseRedirect(reverse('user_login'))
 
-def downvote(request, id):
+
+def downvote(request):
     if request.user.is_authenticated:
-        topic = get_object_or_404(TopicInformation, id=id)
+        topic = get_object_or_404(TopicInformation, id=request.POST.get('topic_id'))
         if topic.downvotes_users.filter(id=request.user.id).exists():
             topic.downvotes_users.remove(request.user)
             topic.votes = topic.votes + 1
@@ -77,9 +82,15 @@ def downvote(request, id):
                 topic.upvotes_users.remove(request.user)
                 topic.votes = topic.votes - 1
         topic.save()
+        context = {
+            'topic': topic,
+        }
+        if request.is_ajax():
+            html = render_to_string('Topics/vote_section.html', context, request=request)
+            return JsonResponse({'form': html})
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     else:
-        messages.success(request, 'Login first to downVote')
+        messages.success(request, 'Login first to downvote')
         return HttpResponseRedirect(reverse('user_login'))
 
 
