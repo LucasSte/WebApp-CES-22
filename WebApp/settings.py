@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY') # to hide sensitive data
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['webapp-ces-22.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['upsite.herokuapp.com', 'localhost']
 
 
 # Application definition
