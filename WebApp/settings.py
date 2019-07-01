@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY') # to hide sensitive data
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['webapp-ces-22.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['upsite.herokuapp.com', 'localhost']
 
 
 # Application definition
@@ -87,16 +87,15 @@ WSGI_APPLICATION = 'WebApp.wsgi.application'
 # db_from_env = dj_database_url.config()
 # DATABASES['default'].update(db_from_env)
 
-DATABASE_URL = 'postgres://xhnxerunpwwbfc:7ceb7c2d29c94492c058a75dd1a9ab2064ccfd3e12243da1c62765b73cc11e8e@ec2-23-21-91-183.compute-1.amazonaws.com:5432/dedrbia1ltuvck'
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+conn = psycopg2.connect(config('DATABASE_URL'), sslmode='require')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dedrbia1ltuvck',
-        'USER': 'xhnxerunpwwbfc',
-        'PASSWORD': '7ceb7c2d29c94492c058a75dd1a9ab2064ccfd3e12243da1c62765b73cc11e8e',
-        'HOST': 'ec2-23-21-91-183.compute-1.amazonaws.com',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
         'PORT': '5432',
     }
 }
