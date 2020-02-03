@@ -6,4 +6,8 @@ To run the apllication, please, have a python virtual environment installed and 
 pip install requirements.txt
 ```
 
-Then, enter the
+Then, run the server by typing into terminal:
+
+```
+python manage.py runserver
+```
